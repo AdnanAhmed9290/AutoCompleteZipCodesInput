@@ -1,4 +1,5 @@
 import React, { ChangeEvent, useCallback, useRef, useState } from "react";
+import classnames from "classnames";
 
 // src
 import { debounce, validateUsZipCode } from "./../utils";
@@ -67,7 +68,9 @@ const AutoCompleteInput = (props: AutoCompleteInputProps) => {
         ref={inputRef}
         onChange={processInput}
         placeholder={placeholder}
-        className={error && "has-error"}
+        className={classnames({
+          "has-error": error
+        })}
       />
       {error && <p className="error">{error}</p>}
       {showSuggestions && suggestionsList.length > 1 && (
