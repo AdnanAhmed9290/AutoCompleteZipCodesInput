@@ -1,0 +1,62 @@
+.App {
+  font-family: sans-serif;
+  text-align: center;
+}
+
+.autocomplete-input {
+  width: 300px;
+
+  .title {
+    text-align: left;
+  }
+
+  input {
+    height: 35px;
+    width: 100%;
+    font-size: 1.25rem;
+    padding: 5px 10px;
+    border-radius: 5px;
+    color: #777777;
+    border-color: #777777;
+
+    &.has-error {
+      border-color: red;
+    }
+  }
+
+  .error {
+    color: red;
+    text-align: left;
+    margin-top: 0;
+    line-height: 2.5;
+    margin-bottom: 5px;
+  }
+
+  .suggestions-container {
+    width: 100%;
+    margin: 0;
+    padding: 5px;
+    box-shadow:  0 0 5px 2px rgba(0,0,0,0.1);
+    list-style: none;
+    max-height: 200px;
+    overflow: auto;
+
+    li.suggestion-item {
+      text-align: left;
+      border-bottom: 1px solid #f0f0f0;
+      padding-bottom: 5px;
+      margin-bottom: 5px;
+      cursor: pointer;
+
+      &:last-child {
+        border-bottom: 0;
+        margin-bottom: 0;
+        padding-bottom: 0;
+      }
+
+      &.selected {
+        color: blue;
+      }
+    }
+  }
+}
