@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useCallback, useRef, useState } from "react";
+import React, { ChangeEvent, useCallback, useState } from "react";
 import classnames from "classnames";
 
 // src
@@ -21,8 +21,8 @@ const AutoCompleteInput = (props: AutoCompleteInputProps) => {
   } = props;
 
   const [error, setError] = useState<string>();
+  const [zipCode, setZipCode] = useState<string>();
   const [suggestionsList, setSuggestionsList] = useState<CityZipCode[]>([]);
-  const inputRef = useRef<HTMLInputElement>(null);
 
   // load zip code suggestions
   const loadSuggestions = useCallback(async (value: string) => {
@@ -38,9 +38,7 @@ const AutoCompleteInput = (props: AutoCompleteInputProps) => {
     return filteredList;
   }, []);
 
-  // handle Input field change
-  const handleChangeInput = async (event: ChangeEvent<HTMLInputElement>) => {
-    const zipCode = event.target.value.trim();
+  const processInput = debounce(async (zipCode: string) => {
     const errorMessage = validateUsZipCode(zipCode);
 
     setError(errorMessage);
@@ -51,13 +49,20 @@ const AutoCompleteInput = (props: AutoCompleteInputProps) => {
       const list = await loadSuggestions(zipCode);
       setSuggestionsList(list);
     }
+  }, 700);
+
+  // handle Input field change
+  const handleChangeInput = (event: ChangeEvent<HTMLInputElement>) => {
+    const zipCode = event.target.value.trim();
+    setZipCode(event.target.value);
+
+    processInput(zipCode);
   };
 
-  const processInput = debounce(handleChangeInput, 700);
-  const currentZipCode = inputRef.current?.value;
-
-  const selectZipCode = (value: string) => {
-    inputRef.current?.value === value;
+  const selectZipCode = (code: string) => {
+    setZipCode(code);
+    setSuggestionsList([]);
+    setError(undefined);
   };
 
   return (
@@ -65,8 +70,8 @@ const AutoCompleteInput = (props: AutoCompleteInputProps) => {
       <h4 className="title">US ZipCodes Input with AutoComplete</h4>
       <input
         type="text"
-        ref={inputRef}
-        onChange={processInput}
+        value={zipCode}
+        onChange={handleChangeInput}
         placeholder={placeholder}
         className={classnames({
           "has-error": error
@@ -76,7 +81,7 @@ const AutoCompleteInput = (props: AutoCompleteInputProps) => {
       {showSuggestions && suggestionsList.length > 1 && (
         <SuggestionList
           suggestions={suggestionsList}
-          selectedZipCode={currentZipCode}
+          selectedZipCode={zipCode}
           handleItemClick={selectZipCode}
         />
       )}
